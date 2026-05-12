@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - MedReport</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+  :root {
+    --bg:#f0f4f9; --surface:#ffffff; --surface-2:#f5f7fa;
+    --border:rgba(0,0,0,.08); --border-2:rgba(0,0,0,.13);
+    --text:#1a2333; --muted:#7a92a8;
+    --accent:#00a88c; --accent-rgb:0,168,140; --accent-dim:rgba(0,168,140,.08);
+    --shadow:0 4px 20px rgba(0,0,0,.1);
+  }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  ::-webkit-scrollbar{width:5px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:10px;}
+  
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    transition: background .3s, color .3s;
+  }
+  
+  .signup-container {
+    background: var(--surface);
+    padding: 40px;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 420px;
+    border: 1px solid var(--border);
+  }
+  
+  .logo {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .logo h1 {
+    font-size: 28px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  .logo p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text);
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    font-size: 15px;
+    font-family: inherit;
+    background: var(--surface-2);
+    color: var(--text);
+    transition: border-color 0.3s, background 0.3s;
+  }
+  
+  input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: var(--surface);
+  }
+  
+  input::placeholder {
+    color: var(--muted);
+  }
+  
+  .btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.15s;
+    box-shadow: 0 4px 16px rgba(var(--accent-rgb), .35);
+  }
+  
+  .btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+  
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .message {
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    display: none;
+  }
+  
+  .error-message {
+    background: rgba(224, 41, 58, 0.08);
+    color: #e0293a;
+    border: 1px solid rgba(224, 41, 58, 0.2);
+  }
+  
+  .success-message {
+    background: rgba(38, 222, 129, 0.08);
+    color: #189e5a;
+    border: 1px solid rgba(38, 222, 129, 0.2);
+  }
+  
+  .footer-text {
+    text-align: center;
+    margin-top: 25px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  
+  .footer-text a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    transition: opacity 0.2s;
+  }
+  
+  .footer-text a:hover {
+    opacity: 0.9;
+  }
+</style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="logo">
+            <h1>MedReport</h1>
+            <p>Create your account</p>
+        </div>
+        
+        <div class="message error-message" id="error-msg"></div>
+        <div class="message success-message" id="success-msg"></div>
+        
+        <form id="signup-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required minlength="3">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required minlength="6">
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirm-password" required>
+            </div>
+            
+            <button type="submit" class="btn" id="signup-btn">Sign Up</button>
+        </form>
+        
+        <div class="footer-text">
+            Already have an account? <a href="/login">Login</a>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('signup-btn');
+            const errorMsg = document.getElementById('error-msg');
+            const successMsg = document.getElementById('success-msg');
+            
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+            
+            if (password !== confirmPassword) {
+                errorMsg.textContent = 'Passwords do not match';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = 'Creating account...';
+            
+            const formData = new FormData(e.target);
+            
+            try {
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    successMsg.textContent = data.message + ' Redirecting to login...';
+                    successMsg.style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                } else {
+                    errorMsg.textContent = data.error;
+                    errorMsg.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'Sign Up';
+                }
+            } catch (error) {
+                errorMsg.textContent = 'An error occurred. Please try again.';
+                errorMsg.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Sign Up';
+            }
+        });
+    </script>
+</body>
+</html>

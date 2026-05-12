@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MedReport</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+  :root {
+    --bg:#f0f4f9; --surface:#ffffff; --surface-2:#f5f7fa;
+    --border:rgba(0,0,0,.08); --border-2:rgba(0,0,0,.13);
+    --text:#1a2333; --muted:#7a92a8;
+    --accent:#00a88c; --accent-rgb:0,168,140; --accent-dim:rgba(0,168,140,.08);
+    --shadow:0 4px 20px rgba(0,0,0,.1);
+  }
+  [data-theme="light"] {
+    --bg:#f0f4f9; --surface:#ffffff; --surface-2:#f5f7fa;
+    --border:rgba(0,0,0,.08); --border-2:rgba(0,0,0,.13);
+    --text:#1a2333; --muted:#7a92a8;
+    --accent:#00a88c; --accent-rgb:0,168,140; --accent-dim:rgba(0,168,140,.08);
+    --shadow:0 4px 20px rgba(0,0,0,.1);
+  }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  ::-webkit-scrollbar{width:5px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:10px;}
+  
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    transition: background .3s, color .3s;
+  }
+  
+  .login-container {
+    background: var(--surface);
+    padding: 40px;
+    border-radius: var(--r);
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 420px;
+    border: 1px solid var(--border);
+  }
+  
+  .logo {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .logo h1 {
+    font-size: 28px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  .logo p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text);
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    font-size: 15px;
+    font-family: inherit;
+    background: var(--surface-2);
+    color: var(--text);
+    transition: border-color 0.3s, background 0.3s;
+  }
+  
+  input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: var(--surface);
+  }
+  
+  input::placeholder {
+    color: var(--muted);
+  }
+  
+  .btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.15s;
+    box-shadow: 0 4px 16px rgba(var(--accent-rgb), .35);
+  }
+  
+  .btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+  
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .error-message {
+    background: rgba(255, 71, 87, 0.1);
+    color: #ff4757;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    display: none;
+    border: 1px solid rgba(255, 71, 87, 0.25);
+  }
+  
+  [data-theme="light"] .error-message {
+    background: rgba(224, 41, 58, 0.08);
+    color: #e0293a;
+    border-color: rgba(224, 41, 58, 0.2);
+  }
+  
+  .footer-text {
+    text-align: center;
+    margin-top: 25px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  
+  .footer-text a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    transition: opacity 0.2s;
+  }
+  
+  .footer-text a:hover {
+    opacity: 0.9;
+  }
+</style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>MedReport</h1>
+            <p>Medical Report Analyzer</p>
+        </div>
+        
+        <div class="error-message" id="error-msg"></div>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit" class="btn" id="login-btn">Login</button>
+        </form>
+        
+        <div class="footer-text">
+            Don't have an account? <a href="/signup">Sign up</a>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('login-btn');
+            const errorMsg = document.getElementById('error-msg');
+            
+            btn.disabled = true;
+            btn.textContent = 'Logging in...';
+            errorMsg.style.display = 'none';
+            
+            const formData = new FormData(e.target);
+            
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    errorMsg.textContent = data.error;
+                    errorMsg.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'Login';
+                }
+            } catch (error) {
+                errorMsg.textContent = 'An error occurred. Please try again.';
+                errorMsg.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Login';
+            }
+        });
+    </script>
+</body>
+</html>

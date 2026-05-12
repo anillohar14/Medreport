@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-lang="hin">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedReport</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#080c14; --surface:#0e1520; --surface-2:#131c2a;
+  --border:#1a2535; --border-2:#1f2d40;
+  --text:#dde4ef; --muted:#5c6f88;
+  --accent:#00c9a7; --accent-rgb:0,201,167; --accent-dim:rgba(0,201,167,.08);
+  --critical:#ff4757; --danger:#ff6b35; --caution:#ffd166; --ok:#26de81;
+  --shadow:0 4px 20px rgba(0,0,0,.4); --r:14px;
+}
+[data-theme="light"] {
+  --bg:#f0f4f9; --surface:#ffffff; --surface-2:#f5f7fa;
+  --border:rgba(0,0,0,.08); --border-2:rgba(0,0,0,.13);
+  --text:#1a2333; --muted:#7a92a8;
+  --accent:#00a88c; --accent-rgb:0,168,140; --accent-dim:rgba(0,168,140,.08);
+  --critical:#e0293a; --danger:#d95822; --caution:#c89200; --ok:#189e5a;
+  --shadow:0 4px 20px rgba(0,0,0,.1);
+}
+[data-lang="hi"] body,[data-lang="hi"] h1,[data-lang="hi"] button,
+[data-lang="hi"] .hero-title,[data-lang="hi"] .hero-sub,
+[data-lang="hi"] .sec-label,[data-lang="hi"] .drop-zone h3,
+[data-lang="hi"] .drop-zone p {
+  font-family:'Noto Sans Devanagari','Outfit',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:10px;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s;}
+
+/* HEADER */
+header{padding:0 28px;height:58px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:rgba(8,12,20,.92);backdrop-filter:blur(10px);position:sticky;top:0;z-index:100;transition:background .3s,border-color .3s;}
+[data-theme="light"] header{background:rgba(240,244,249,.92);}
+.logo{width:32px;height:32px;background:var(--accent);border-radius:9px;display:grid;place-items:center;font-weight:700;color:#fff;font-size:14px;flex-shrink:0;}
+header h1{font-size:15px;font-weight:600;flex:1;}
+header h1 span{color:var(--muted);font-weight:400;}
+.back-btn{padding:6px 16px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border-2);color:var(--text);text-decoration:none;font-size:13px;font-weight:500;transition:all .2s;}
+.back-btn:hover{background:var(--surface);border-color:var(--accent);}
+
+/* LANGUAGE TOGGLE */
+.lang-toggle{display:flex;gap:3px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:9px;padding:3px;flex-shrink:0;}
+.lang-btn{padding:4px 10px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;font-weight:700;color:var(--muted);font-family:'Outfit',sans-serif;letter-spacing:.3px;transition:all .18s;white-space:nowrap;}
+.lang-btn:hover{color:var(--text);}
+.lang-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(var(--accent-rgb),.4);}
+
+/* THEME TOGGLE */
+.theme-btn{width:34px;height:34px;border:1px solid var(--border-2);border-radius:9px;background:var(--surface-2);cursor:pointer;display:grid;place-items:center;color:var(--muted);flex-shrink:0;transition:all .2s;}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent);}
+.theme-btn svg{width:16px;height:16px;}
+.icon-moon{display:block;}.icon-sun{display:none;}
+[data-theme="light"] .icon-moon{display:none;}[data-theme="light"] .icon-sun{display:block;}
+
+/* LAYOUT */
+main{max-width:980px;margin:0 auto;padding:48px 24px 80px;}
+
+/* VIEW MANAGEMENT */
+.view{display:none;}.view.active{display:block;}
+#loading-view{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:65vh;gap:20px;}
+#loading-view.active{display:flex;}
+
+/* UPLOAD VIEW */
+#upload-view{min-height:72vh;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+#upload-view.active{display:flex;}
+.hero-title{font-size:clamp(26px,4.5vw,44px);font-weight:700;line-height:1.2;margin-bottom:12px;background:linear-gradient(130deg,var(--accent) 0%,#45aaf2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{color:var(--muted);font-size:15px;margin-bottom:44px;}
+.drop-zone{width:min(460px,100%);border:1.5px dashed var(--border-2);border-radius:20px;padding:52px 36px;cursor:pointer;background:var(--surface);transition:border-color .2s,background .2s,transform .2s,box-shadow .2s;}
+.drop-zone:hover,.drop-zone.over{border-color:var(--accent);background:var(--accent-dim);transform:translateY(-2px);box-shadow:var(--shadow);}
+.drop-icon{font-size:44px;margin-bottom:18px;display:block;line-height:1;transition:transform .3s;}
+.drop-zone:hover .drop-icon{transform:scale(1.1) translateY(-2px);}
+.drop-zone h3{font-size:17px;font-weight:500;margin-bottom:7px;}
+.drop-zone p{color:var(--muted);font-size:13px;margin-bottom:26px;}
+.pick-btn{background:var(--accent);color:#fff;padding:11px 28px;border-radius:9px;font-weight:600;font-size:14px;border:none;cursor:pointer;font-family:inherit;transition:opacity .15s,transform .15s,box-shadow .15s;box-shadow:0 4px 16px rgba(var(--accent-rgb),.35);}
+.pick-btn:hover{opacity:.9;transform:translateY(-1px);}
+#file-input{display:none;}
+
+/* LOADING */
+.spin{width:48px;height:48px;border:3px solid var(--border-2);border-top-color:var(--accent);border-radius:50%;animation:spin .75s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#loading-view h3{font-size:18px;font-weight:500;}
+#loading-view p{color:var(--muted);font-size:13px;}
+
+/* SCORE ROW */
+.score-row{display:grid;grid-template-columns:200px 1fr;gap:16px;margin-bottom:28px;}
+.gauge-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:26px 16px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;box-shadow:var(--shadow);transition:background .3s;}
+.gauge-svg{width:140px;height:140px;}
+.g-track{fill:none;stroke:var(--border-2);stroke-width:10;}
+.g-arc{fill:none;stroke-width:10;stroke-linecap:round;stroke-dasharray:358;stroke-dashoffset:358;transform:rotate(-90deg);transform-origin:70px 70px;transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1),stroke .4s;}
+.g-num{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:500;fill:var(--text);}
+.g-sub{font-size:9px;fill:var(--muted);}
+.gauge-lbl{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px 26px;display:flex;flex-direction:column;justify-content:space-between;gap:16px;box-shadow:var(--shadow);transition:background .3s;}
+.summary-text{font-size:14px;line-height:1.7;color:var(--muted);}
+.chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{padding:4px 13px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid transparent;}
+.c-critical{background:rgba(255,71,87,.1);color:var(--critical);border-color:rgba(255,71,87,.25);}
+.c-danger{background:rgba(255,107,53,.1);color:var(--danger);border-color:rgba(255,107,53,.25);}
+.c-caution{background:rgba(255,209,102,.08);color:var(--caution);border-color:rgba(255,209,102,.2);}
+.c-ok{background:rgba(38,222,129,.08);color:var(--ok);border-color:rgba(38,222,129,.2);}
+
+/* SECTION LABEL */
+.sec-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* PATTERNS */
+.patterns-wrap{margin-bottom:36px;}
+.patterns-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+.pattern-card{background:var(--surface);border:1px solid var(--border);border-left:4px solid;border-radius:var(--r);padding:18px;animation:fadeUp .45s ease backwards;transition:transform .2s,box-shadow .2s,background .3s;}
+.pattern-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+.pattern-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:9px;}
+.pattern-name{font-size:13.5px;font-weight:600;line-height:1.4;}
+.conf-pill{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:10px;flex-shrink:0;}
+.conf-High{background:rgba(255,71,87,.13);color:var(--critical);}
+.conf-Moderate{background:rgba(255,209,102,.1);color:var(--caution);}
+.inv-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.inv-tag{font-size:10px;padding:2px 8px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:5px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+.pat-expl{font-size:12.5px;color:var(--muted);margin-bottom:13px;line-height:1.65;}
+.pat-action{font-size:12px;color:var(--text);background:var(--surface-2);border-radius:9px;padding:12px 14px;white-space:pre-line;line-height:1.8;transition:background .3s;}
+
+/* CATEGORIES */
+.cats-wrap{margin-bottom:36px;}
+.cats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px;}
+.cat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;animation:fadeUp .45s ease backwards;transition:transform .2s,box-shadow .2s,background .3s;}
+.cat-card:hover{transform:translateY(-1px);box-shadow:var(--shadow);}
+.cat-head{padding:12px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);}
+.cat-name{font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);}
+.cat-pill{font-size:10px;font-weight:600;padding:2px 10px;border-radius:20px;}
+.pill-warn{background:rgba(255,107,53,.12);color:var(--danger);}
+.pill-ok{background:rgba(38,222,129,.1);color:var(--ok);}
+.p-row{padding:12px 17px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;transition:background .15s;}
+.p-row:last-child{border-bottom:none;}.p-row:hover{background:var(--surface-2);}
+.p-name{font-size:12.5px;font-weight:500;margin-bottom:2px;}
+.p-meaning{font-size:11px;color:var(--muted);line-height:1.5;}
+.p-right{text-align:right;}
+.p-value{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:500;line-height:1;}
+.p-unit{font-size:9px;color:var(--muted);display:block;margin-top:2px;}
+.status-tag{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px;}
+.st-Critical{background:rgba(255,71,87,.12);color:var(--critical);}
+.st-High,.st-Low{background:rgba(255,107,53,.12);color:var(--danger);}
+.st-Borderline{background:rgba(255,209,102,.1);color:var(--caution);}
+.st-Normal{background:rgba(38,222,129,.08);color:var(--ok);}
+.dev-bar-wrap{padding:0 17px 10px;}
+.dev-bar-bg{height:3px;background:var(--border-2);border-radius:3px;overflow:hidden;}
+.dev-bar-fill{height:100%;border-radius:3px;width:0;transition:width 1.1s cubic-bezier(.4,0,.2,1) .3s;}
+
+/* NORMAL GRID */
+.norm-wrap{margin-bottom:36px;}
+.norm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px;}
+.norm-chip{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px 14px;animation:fadeUp .4s ease backwards;transition:transform .2s,background .3s;}
+.norm-chip:hover{transform:translateY(-1px);}
+.nc-name{font-size:10.5px;color:var(--muted);margin-bottom:5px;}
+.nc-val{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:500;color:var(--ok);}
+.nc-unit{font-size:9px;color:var(--muted);}
+
+/* ADVICE & RESET */
+.advice-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--r);padding:17px 22px;font-size:13.5px;line-height:1.8;margin-bottom:30px;color:var(--muted);transition:background .3s;}
+.action-btns{display:flex;gap:12px;justify-content:center;margin-bottom:32px;}
+.action-btn{padding:10px 24px;border-radius:9px;font-weight:600;font-size:14px;border:none;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;gap:8px;}
+.btn-download{background:var(--accent);color:#fff;}
+.btn-new{background:var(--surface);color:var(--text);border:1px solid var(--border-2);}
+.btn-download:hover{opacity:.9;transform:translateY(-1px);}
+.btn-new:hover{background:var(--surface-2);border-color:var(--accent);}
+.reset-btn{display:block;margin:0 auto;background:transparent;border:1px solid var(--border-2);color:var(--muted);padding:10px 26px;border-radius:9px;cursor:pointer;font-family:inherit;font-size:13px;transition:border-color .2s,color .2s,transform .15s;}
+.reset-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+@media(max-width:640px){
+  .score-row{grid-template-columns:1fr;}
+  .gauge-card{flex-direction:row;gap:20px;padding:18px;}
+  .gauge-svg{width:100px;height:100px;}
+  main{padding:24px 16px 60px;}
+  .lang-btn{padding:4px 7px;font-size:10px;}
+  header h1 span{display:none;}
+  .action-btns{flex-direction:column;}
+  .action-btn{width:100%;}
+  .back-btn{font-size:8px;padding:4px 8px;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">M</div>
+  <h1>MedReport<span data-i18n="header_sub">— Smart Lab Report Analyzer</span></h1>
+  <a href="/dashboard" class="back-btn">Dashboard</a>
+
+  <!-- ★ LANGUAGE TOGGLE ★ -->
+  <div class="lang-toggle" role="group" aria-label="Language">
+    <button class="lang-btn active" id="btn-en"  onclick="setLang('en')"  title="English">EN</button>
+    <button class="lang-btn" id="btn-hi"  onclick="setLang('hi')"  title="Hindi">हिं</button>
+    <button class="lang-btn" id="btn-hin" onclick="setLang('hin')" title="Hinglish">HG</button>
+  </div>
+
+  <!-- THEME TOGGLE -->
+  <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="icon-sun"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  </button>
+</header>
+
+<main>
+
+  <!-- ① UPLOAD VIEW -->
+  <div id="upload-view" class="view active">
+    <p class="hero-title" data-i18n="hero_title">Apni lab report samjho</p>
+    <p class="hero-sub"   data-i18n="hero_sub">PDF ya image upload karo — seconds mein analyze hoga</p>
+    <div class="drop-zone" id="drop-zone">
+      <span class="drop-icon"></span>
+      <h3 data-i18n="drop_title">Report yahan drop karo</h3>
+      <p  data-i18n="drop_sub">PDF, JPG, PNG — supported formats</p>
+      <button class="pick-btn" onclick="document.getElementById('file-input').click()" data-i18n="drop_btn">File Chunno</button>
+    </div>
+    <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png">
+  </div>
+
+  <!-- ② LOADING VIEW -->
+  <div id="loading-view">
+    <div class="spin"></div>
+    <h3 data-i18n="loading_title">Report analyze ho rahi hai...</h3>
+    <p  data-i18n="loading_sub">Thoda wait karo...</p>
+  </div>
+
+  <!-- ③ RESULTS VIEW -->
+  <div id="results-view" class="view">
+
+    <div class="score-row">
+      <div class="gauge-card">
+        <svg class="gauge-svg" viewBox="0 0 140 140">
+          <circle class="g-track" cx="70" cy="70" r="57"/>
+          <circle class="g-arc"   cx="70" cy="70" r="57" id="g-arc"/>
+          <text class="g-num" x="70" y="74" text-anchor="middle" dominant-baseline="middle" id="g-num">0</text>
+          <text class="g-sub" x="70" y="92" text-anchor="middle" id="g-sub-text">mein se 100</text>
+        </svg>
+        <div class="gauge-lbl" id="gauge-label">—</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-text" id="summary-text"></div>
+        <div class="chips" id="chips"></div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-btns">
+      <button class="action-btn btn-download" onclick="downloadPDF()">
+        <span></span> Download PDF
+      </button>
+      <button class="action-btn btn-new" onclick="resetApp()">
+        <span></span> New Analysis
+      </button>
+    </div>
+
+    <div class="patterns-wrap" id="patterns-wrap">
+      <div class="sec-label" data-i18n="sec_patterns">Detected Patterns</div>
+      <div class="patterns-grid" id="patterns-grid"></div>
+    </div>
+
+    <div class="cats-wrap">
+      <div class="sec-label" data-i18n="sec_categories">Category ke hisaab se</div>
+      <div class="cats-grid" id="cats-grid"></div>
+    </div>
+
+    <div class="norm-wrap" id="norm-wrap">
+      <div class="sec-label" data-i18n="sec_normal">Normal Parameters</div>
+      <div class="norm-grid" id="norm-grid"></div>
+    </div>
+
+    <div class="sec-label" data-i18n="sec_advice">Doctor se milne se pehle note karo</div>
+    <div class="advice-card" id="advice-card"></div>
+
+    <button class="reset-btn" onclick="resetApp()" data-i18n="reset_btn">← Naya Report Upload Karo</button>
+  </div>
+
+</main>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   UI TRANSLATIONS — static text (header, buttons, labels)
+   ═══════════════════════════════════════════════════════════ */
+const T = {
+  en: {
+    header_sub:'— Smart Lab Report Analyzer',
+    hero_title:'Understand your lab report',
+    hero_sub:'Upload your PDF or image — analyzed in seconds',
+    drop_title:'Drop your report here',
+    drop_sub:'PDF, JPG, PNG — supported formats',
+    drop_btn:'Choose File',
+    loading_title:'Analyzing your report...',
+    loading_sub:'Please wait a few seconds',
+    gauge_sub:'out of 100',
+    sec_patterns:'Detected Patterns',
+    sec_categories:'Parameters by Category',
+    sec_normal:'Normal Parameters',
+    sec_advice:'Note before visiting your doctor',
+    reset_btn:'← Upload New Report',
+    pill_review:'Review',
+    pill_ok:'All OK',
+    chip_critical:'Critical',
+    chip_range:'Out-of-range',
+    chip_border:'Borderline',
+    chip_normal:'Normal',
+    err_server:'Could not connect to server.\nRun: python app.py',
+  },
+  hi: {
+    header_sub:'— स्मार्ट लैब रिपोर्ट विश्लेषक',
+    hero_title:'अपनी लैब रिपोर्ट समझें',
+    hero_sub:'PDF या इमेज अपलोड करें — सेकंड में विश्लेषण होगा',
+    drop_title:'रिपोर्ट यहाँ छोड़ें',
+    drop_sub:'PDF, JPG, PNG — समर्थित प्रारूप',
+    drop_btn:'फ़ाइल चुनें',
+    loading_title:'रिपोर्ट का विश्लेषण हो रहा है...',
+    loading_sub:'कृपया प्रतीक्षा करें...',
+    gauge_sub:'में से 100',
+    sec_patterns:'पहचाने गए पैटर्न',
+    sec_categories:'श्रेणी के अनुसार परिणाम',
+    sec_normal:'सामान्य परिणाम',
+    sec_advice:'डॉक्टर से मिलने से पहले नोट करें',
+    reset_btn:'← नई रिपोर्ट अपलोड करें',
+    pill_review:'जाँच करें',
+    pill_ok:'सामान्य',
+    chip_critical:'गंभीर',
+    chip_range:'सीमा से बाहर',
+    chip_border:'सीमारेखा',
+    chip_normal:'सामान्य',
+    err_server:'सर्वर से कनेक्ट नहीं हो पाया।\npython app.py चलाएं।',
+  },
+  hin: {
+    header_sub:'— Smart Lab Report Analyzer',
+    hero_title:'Apni lab report samjho',
+    hero_sub:'PDF ya image upload karo — seconds mein analyze hoga',
+    drop_title:'Report yahan drop karo',
+    drop_sub:'PDF, JPG, PNG — supported formats',
+    drop_btn:'File Chunno',
+    loading_title:'Report analyze ho rahi hai...',
+    loading_sub:'Thoda wait karo...',
+    gauge_sub:'mein se 100',
+    sec_patterns:'Detected Patterns',
+    sec_categories:'Category ke hisaab se',
+    sec_normal:'Normal Parameters',
+    sec_advice:'Doctor se milne se pehle note karo',
+    reset_btn:'← Naya Report Upload Karo',
+    pill_review:'Review',
+    pill_ok:'All OK',
+    chip_critical:'Critical',
+    chip_range:'Out-of-range',
+    chip_border:'Borderline',
+    chip_normal:'Normal',
+    err_server:'Server se connect nahi ho paya.\npython app.py run karo.',
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════════ */
+let currentLang  = 'en';
+window._allLangs = null;   // ← server se aaye teeno languages ka data yahan store hoga
+const CIRC = 2 * Math.PI * 57;
+
+/* ═══════════════════════════════════════════════════════════
+   LANGUAGE HELPERS
+   ═══════════════════════════════════════════════════════════ */
+function t(key) {
+  return (T[currentLang] && T[currentLang][key]) || T['hin'][key] || key;
+}
+
+/* ── setLang: yahan FIX hai ──────────────────────────────── */
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.setAttribute('data-lang', lang);
+
+  /* Active button */
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + lang).classList.add('active');
+
+  try { localStorage.setItem('medreport-lang', lang); } catch(e) {}
+
+  /* Static text update (data-i18n elements) */
+  applyTranslations();
+
+  /* ── FIX: Agar results show ho rahe hain toh us language ka data re-render karo ── */
+  if (window._allLangs && window._allLangs[lang]) {
+    renderResults(window._allLangs[lang]);
+  }
+}
+
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  const gs = document.getElementById('g-sub-text');
+  if (gs) gs.textContent = t('gauge_sub');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   THEME TOGGLE
+   ═══════════════════════════════════════════════════════════ */
+function toggleTheme() {
+  const html = document.documentElement;
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  try { localStorage.setItem('medreport-theme', next); } catch(e) {}
+}
+
+/* ── Restore saved preferences on page load ── */
+(function() {
+  try {
+    const th = localStorage.getItem('medreport-theme');
+    if (th) document.documentElement.setAttribute('data-theme', th);
+    const lg = localStorage.getItem('medreport-lang');
+    if (lg && T[lg]) {
+      currentLang = lg;
+      document.documentElement.setAttribute('data-lang', lg);
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      const btn = document.getElementById('btn-' + lg);
+      if (btn) btn.classList.add('active');
+    }
+  } catch(e) {}
+})();
+
+/* ═══════════════════════════════════════════════════════════
+   VIEW MANAGEMENT
+   ═══════════════════════════════════════════════════════════ */
+function showView(id) {
+  ['upload-view','results-view'].forEach(v =>
+    document.getElementById(v).classList.remove('active'));
+  document.getElementById('loading-view').style.display = 'none';
+  if (id === 'loading-view') {
+    document.getElementById('loading-view').style.display = 'flex';
+  } else {
+    document.getElementById(id).classList.add('active');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DRAG-DROP + UPLOAD
+   ═══════════════════════════════════════════════════════════ */
+const dropZone  = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('over'); });
+dropZone.addEventListener('dragleave', ()  => dropZone.classList.remove('over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('over');
+  if (e.dataTransfer.files[0]) upload(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', e => {
+  if (e.target.files[0]) upload(e.target.files[0]);
+});
+
+async function upload(file) {
+  showView('loading-view');
+  window._allLangs = null;
+
+  const form = new FormData();
+  form.append('file', file);
+  form.append('lang', currentLang);
+
+  try {
+    const res  = await fetch('/analyze', { method: 'POST', body: form });
+    const data = await res.json();
+    if (data.error) { alert('Error: ' + data.error); showView('upload-view'); return; }
+
+    /* ── FIX: Teeno languages ka data store karo ── */
+    window._allLangs = data.all_langs;
+    
+    /* Save report ID for download feature */
+    if (data.report_id) {
+      currentReportId = data.report_id;
+    }
+
+    /* Current language ka data render karo */
+    renderResults(window._allLangs[currentLang]);
+
+  } catch {
+    alert(t('err_server'));
+    showView('upload-view');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER — current language ka data use karo
+   ═══════════════════════════════════════════════════════════ */
+function renderResults(d) {
+  /* d = ek language ka result object */
+  renderGauge(d.health_score, d.score_color, d.score_label);
+  renderSummary(d);
+  renderPatterns(d.patterns);
+  renderCategories(d.by_category);
+  renderNormal(d.normal);
+  document.getElementById('advice-card').textContent = d.final_advice;
+  applyTranslations();
+  showView('results-view');
+
+  requestAnimationFrame(() => setTimeout(() => {
+    document.querySelectorAll('.dev-bar-fill').forEach(b => { b.style.width = b.dataset.w; });
+  }, 250));
+}
+
+/* ── Gauge ── */
+function renderGauge(score, color, label) {
+  const arc = document.getElementById('g-arc');
+  arc.style.stroke = color;
+  document.getElementById('gauge-label').textContent = label;
+  document.getElementById('gauge-label').style.color = color;
+  document.getElementById('g-sub-text').textContent  = t('gauge_sub');
+
+  let cur = 0;
+  const step = () => {
+    cur = Math.min(cur + 1.4, score);
+    arc.style.strokeDashoffset = CIRC * (1 - cur / 100);
+    document.getElementById('g-num').textContent = Math.round(cur);
+    if (cur < score) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+/* ── Summary + Chips ── */
+function renderSummary(d) {
+  document.getElementById('summary-text').textContent = d.summary;
+  const crit = d.issues.filter(x => x.status === 'Critical').length;
+  const high = d.issues.filter(x => ['High','Low'].includes(x.status)).length;
+  let html = '';
+  if (crit)                html += chip(`${crit} ${t('chip_critical')}`,             'critical');
+  if (high)                html += chip(`${high} ${t('chip_range')}`,                'danger');
+  if (d.borderline.length) html += chip(`${d.borderline.length} ${t('chip_border')}`,'caution');
+  if (d.normal.length)     html += chip(`${d.normal.length} ${t('chip_normal')}`,    'ok');
+  document.getElementById('chips').innerHTML = html;
+}
+function chip(txt, cls) { return `<div class="chip c-${cls}">${txt}</div>`; }
+
+/* ── Patterns ── */
+function renderPatterns(patterns) {
+  const wrap = document.getElementById('patterns-wrap');
+  const grid = document.getElementById('patterns-grid');
+  if (!patterns || !patterns.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = '';
+  grid.innerHTML = patterns.map((p, i) => `
+    <div class="pattern-card" style="border-left-color:${p.color};animation-delay:${i*.09}s">
+      <div class="pattern-top">
+        <div class="pattern-name">${p.name}</div>
+        <div class="conf-pill conf-${p.confidence}">${p.confidence}</div>
+      </div>
+      <div class="inv-row">${p.involved.map(s => `<span class="inv-tag">${s}</span>`).join('')}</div>
+      <div class="pat-expl">${p.explanation}</div>
+      <div class="pat-action">${p.action}</div>
+    </div>`).join('');
+}
+
+/* ── Categories ── */
+function renderCategories(byCategory) {
+  const grid = document.getElementById('cats-grid');
+  grid.innerHTML = '';
+  let delay = 0;
+  for (const [cat, catData] of Object.entries(byCategory)) {
+    let rows = '';
+    (catData.issues || []).forEach(p => {
+      const devW  = Math.min(p.deviation || 0, 100);
+      const stKey = p.status.replace('-High','').replace('-Low','');
+      rows += `<div>
+        <div class="p-row">
+          <div>
+            <div class="p-name">${p.name}</div>
+            ${p.meaning ? `<div class="p-meaning">${p.meaning}</div>` : ''}
+          </div>
+          <div class="p-right">
+            <div class="p-value" style="color:${p.color}">${p.value}</div>
+            <span class="p-unit">${p.unit}</span>
+            <div class="status-tag st-${stKey}">${p.status}</div>
+          </div>
+        </div>
+        ${devW > 0 ? `<div class="dev-bar-wrap"><div class="dev-bar-bg">
+          <div class="dev-bar-fill" data-w="${devW}%" style="background:${p.color}"></div>
+        </div></div>` : ''}
+      </div>`;
+    });
+    (catData.normal || []).forEach(p => {
+      rows += `<div class="p-row">
+        <div><div class="p-name">${p.name}</div></div>
+        <div class="p-right">
+          <div class="p-value" style="color:var(--ok)">${p.value}</div>
+          <span class="p-unit">${p.unit}</span>
+        </div>
+      </div>`;
+    });
+    const pillCls  = catData.has_problems ? 'pill-warn' : 'pill-ok';
+    const pillText = catData.has_problems ? t('pill_review') : t('pill_ok');
+    grid.innerHTML += `
+      <div class="cat-card" style="animation-delay:${delay++ * .055}s">
+        <div class="cat-head">
+          <div class="cat-name">${cat}</div>
+          <div class="cat-pill ${pillCls}">${pillText}</div>
+        </div>
+        ${rows}
+      </div>`;
+  }
+}
+
+/* ── Normal grid ── */
+function renderNormal(normal) {
+  const wrap = document.getElementById('norm-wrap');
+  if (!normal || !normal.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = '';
+  document.getElementById('norm-grid').innerHTML = normal.map((p, i) => `
+    <div class="norm-chip" style="animation-delay:${i*.035}s">
+      <div class="nc-name">${p.name}</div>
+      <div class="nc-val">${p.value} <span class="nc-unit">${p.unit}</span></div>
+    </div>`).join('');
+}
+
+/* ── Reset ── */
+let currentReportId = null;
+
+function resetApp() {
+  document.getElementById('file-input').value = '';
+  window._allLangs = null;
+  currentReportId = null;
+  window.history.pushState({}, '', '/analyze');
+  showView('upload-view');
+}
+
+/* ── Download PDF ── */
+function downloadPDF() {
+  if (currentReportId) {
+    window.location.href = `/download/${currentReportId}`;
+  } else {
+    alert('No report to download. Please analyze a report first.');
+  }
+}
+
+/* ── Check for report ID in URL on page load ── */
+window.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(window.location.search);
+  const reportId = params.get('report');
+  
+  if (reportId) {
+    showView('loading-view');
+    try {
+      const res = await fetch(`/report/${reportId}`);
+      const data = await res.json();
+      
+      if (data.success) {
+        window._allLangs = data.all_langs;
+        currentReportId = reportId;
+        renderResults(data.all_langs[currentLang]);
+      } else {
+        alert('Report not found');
+        showView('upload-view');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error loading report');
+      showView('upload-view');
+    }
+  }
+});
+
+window.getCurrentLang = () => currentLang;
+(function() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+  })();
+
+  function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  }
+
+  // Language toggle
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      document.documentElement.setAttribute('data-lang', e.target.dataset.lang);
+      localStorage.setItem('lang', e.target.dataset.lang);
+    });
+  });
+</script>
+</body>
+</html>

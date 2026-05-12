@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MedReport</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+  --bg:#080c14; 
+  --surface:#0e1520; 
+  --surface-2:#131c2a;
+  --border:#1a2535; 
+  --text:#dde4ef; 
+  --muted:#5c6f88;
+  --accent:#00c9a7; 
+  --danger:#ff4757; 
+  --ok:#26de81;
+  --shadow:0 4px 20px rgba(0,0,0,.4);
+  --r:14px;
+}
+
+[data-theme="light"] {
+  --bg:#f0f4f9; 
+  --surface:#ffffff; 
+  --surface-2:#f5f7fa;
+  --border:rgba(0,0,0,.08); 
+  --text:#1a2333; 
+  --muted:#7a92a8;
+  --accent:#00a88c; 
+  --danger:#e0293a; 
+  --ok:#189e5a;
+  --shadow:0 4px 20px rgba(0,0,0,.1);
+}
+
+* {
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body {
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  transition:.3s;
+}
+
+
+
+.right-section {
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+/* THEME BUTTON SAME AS INDEX */
+.theme-btn{
+  width:34px;
+  height:34px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  background:var(--surface-2);
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  color:var(--muted);
+  transition:.2s;
+}
+
+.theme-btn:hover{
+  border-color:var(--accent);
+  color:var(--accent);
+}
+
+.theme-btn svg{
+  width:16px;
+  height:16px;
+}
+
+.icon-moon{display:block;}
+.icon-sun{display:none;}
+
+[data-theme="light"] .icon-moon{display:none;}
+[data-theme="light"] .icon-sun{display:block;}
+
+.logo h1 {
+  font-size:18px;
+  color:var(--accent);
+}
+
+.username {
+  color:var(--muted);
+}
+
+.logout-btn {
+  padding:8px 16px;
+  background:var(--danger);
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* CONTAINER */
+.container {
+  max-width:1100px;
+  margin:auto;
+  padding:40px 20px;
+}
+
+/* ACTIONS */
+.actions {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:30px;
+}
+
+h2 {
+  font-size:22px;
+}
+
+.new-analysis-btn {
+  padding:10px 22px;
+  background:var(--accent);
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:600;
+}
+
+/* GRID */
+.reports-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:16px;
+}
+
+/* CARD */
+.report-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:20px;
+  box-shadow:var(--shadow);
+  transition:.2s;
+}
+
+.report-card:hover {
+  transform:translateY(-3px);
+}
+
+/* HEADER */
+.report-header {
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:15px;
+}
+
+.report-name {
+  font-weight:600;
+}
+
+/* BADGES */
+.health-badge {
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:600;
+}
+
+.badge-good {
+  background:rgba(38,222,129,.1);
+  color:var(--ok);
+}
+
+.badge-moderate {
+  background:rgba(255,209,102,.1);
+  color:#ffd166;
+}
+
+.badge-poor {
+  background:rgba(255,71,87,.1);
+  color:var(--danger);
+}
+
+/* BUTTONS */
+.report-actions {
+  display:flex;
+  gap:10px;
+}
+
+.btn-small {
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:13px;
+}
+
+.btn-view {
+  background:var(--accent);
+  color:#fff;
+}
+
+.btn-download {
+  background:var(--surface-2);
+  color:var(--text);
+}
+
+/* EMPTY */
+.empty-state {
+  text-align:center;
+  color:var(--muted);
+  padding:50px 20px;
+}
+.empty-state-content {
+  margin-bottom:20px;
+}
+
+
+/* HEADER */
+header{padding:0 28px;height:58px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:rgba(8,12,20,.92);backdrop-filter:blur(10px);position:sticky;top:0;z-index:100;transition:background .3s,border-color .3s;}
+[data-theme="light"] header{background:rgba(240,244,249,.92);}
+.logo{width:32px;height:32px;background:var(--accent);border-radius:9px;display:grid;place-items:center;font-weight:700;color:#fff;font-size:14px;flex-shrink:0;}
+header h1{font-size:15px;font-weight:600;flex:1;}
+header h1 span{color:var(--muted);font-weight:400;}
+.back-btn{padding:6px 16px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border-2);color:var(--text);text-decoration:none;font-size:13px;font-weight:500;transition:all .2s;}
+.back-btn:hover{background:var(--surface);border-color:var(--accent);}
+
+/* LANGUAGE TOGGLE */
+.lang-toggle{display:flex;gap:3px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:9px;padding:3px;flex-shrink:0;}
+.lang-btn{padding:4px 10px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;font-weight:700;color:var(--muted);font-family:'Outfit',sans-serif;letter-spacing:.3px;transition:all .18s;white-space:nowrap;}
+.lang-btn:hover{color:var(--text);}
+.lang-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(var(--accent-rgb),.4);}
+
+/* THEME TOGGLE */
+.theme-btn{width:34px;height:34px;border:1px solid var(--border-2);border-radius:9px;background:var(--surface-2);cursor:pointer;display:grid;place-items:center;color:var(--muted);flex-shrink:0;transition:all .2s;}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent);}
+.theme-btn svg{width:16px;height:16px;}
+.icon-moon{display:block;}.icon-sun{display:none;}
+[data-theme="light"] .icon-moon{display:none;}[data-theme="light"] .icon-sun{display:block;}
+
+/* LAYOUT */
+main{max-width:980px;margin:0 auto;padding:48px 24px 80px;}
+
+/* VIEW MANAGEMENT */
+.view{display:none;}.view.active{display:block;}
+#loading-view{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:65vh;gap:20px;}
+#loading-view.active{display:flex;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+@media(max-width:640px){
+  .score-row{grid-template-columns:1fr;}
+  .gauge-card{flex-direction:row;gap:20px;padding:18px;}
+  .gauge-svg{width:100px;height:100px;}
+  main{padding:24px 16px 60px;}
+  .lang-btn{padding:4px 7px;font-size:10px;}
+  header h1 span{display:none;}
+  .action-btns{flex-direction:column;}
+  .action-btn{width:100%;}
+  .back-btn{font-size:8px;padding:4px 8px;}
+}
+    </style>
+</head>
+<body>
+    
+<header>
+  <div class="logo">M</div>
+  <h1>MedReport<span data-i18n="header_sub">— Smart Lab Report Analyzer</span></h1>
+  <a href="/logout" class="logout-btn">Logout</a>
+
+
+  <!-- THEME TOGGLE -->
+  <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="icon-sun"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  </button>
+</header>
+    
+    <div class="container">
+        <div class="actions">
+            <h2>My Reports</h2>
+            <a href="/analyze" class="new-analysis-btn">+ New Analysis</a>
+        </div>
+        
+        {% if reports %}
+        <div class="reports-grid">
+            {% for report in reports %}
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-name">{{ report.filename }}</div>
+                    <div class="health-badge {% if report.health_score >= 85 %}badge-good{% elif report.health_score >= 65 %}badge-moderate{% else %}badge-poor{% endif %}">
+                        {{ report.health_score }}/100
+                    </div>
+                </div>
+
+                <div class="report-actions">
+                    <button class="btn-small btn-view" onclick="viewReport('{{ report.id }}')">View</button>
+                   <div style="display: flex; gap: 5px;">
+                      <a href="/download/{{ report.id }}" class="btn-small btn-download" style="text-align: center; text-decoration: none;">Download PDF</a>
+                  </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h3 class="empty-state-content">No reports yet</h3>
+            <p class="empty-state-content">Upload your first medical report to get started!</p>
+            <a href="/analyze" class="new-analysis-btn" class="empty-state-content">Start Analysis</a>
+        </div>
+        {% endif %}
+    </div>
+    
+    <script>
+        function viewReport(reportId) {
+            window.location.href = '/analyze?report=' + reportId;
+        }
+
+        (function() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+  })();
+
+  function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  }
+
+    </script>
+</body>
+</html>
