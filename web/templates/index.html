@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark" data-lang="hin">
+<html lang="en" data-theme="dark" data-lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -209,13 +209,13 @@ main{max-width:980px;margin:0 auto;padding:48px 24px 80px;}
 
   <!-- ① UPLOAD VIEW -->
   <div id="upload-view" class="view active">
-    <p class="hero-title" data-i18n="hero_title">Apni lab report samjho</p>
-    <p class="hero-sub"   data-i18n="hero_sub">PDF ya image upload karo — seconds mein analyze hoga</p>
+    <p class="hero-title" data-i18n="hero_title">Understand your lab report</p>
+    <p class="hero-sub"   data-i18n="hero_sub">Upload your PDF or image — analyzed in second</p>
     <div class="drop-zone" id="drop-zone">
       <span class="drop-icon"></span>
-      <h3 data-i18n="drop_title">Report yahan drop karo</h3>
+      <h3 data-i18n="drop_title">Drop your report here</h3>
       <p  data-i18n="drop_sub">PDF, JPG, PNG — supported formats</p>
-      <button class="pick-btn" onclick="document.getElementById('file-input').click()" data-i18n="drop_btn">File Chunno</button>
+      <button class="pick-btn" onclick="document.getElementById('file-input').click()" data-i18n="drop_btn">Choose File</button>
     </div>
     <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png">
   </div>
@@ -223,8 +223,8 @@ main{max-width:980px;margin:0 auto;padding:48px 24px 80px;}
   <!-- ② LOADING VIEW -->
   <div id="loading-view">
     <div class="spin"></div>
-    <h3 data-i18n="loading_title">Report analyze ho rahi hai...</h3>
-    <p  data-i18n="loading_sub">Thoda wait karo...</p>
+    <h3 data-i18n="loading_title">Report analyze your report...</h3>
+    <p  data-i18n="loading_sub">please wait for few seconds...</p>
   </div>
 
   <!-- ③ RESULTS VIEW -->
@@ -408,20 +408,16 @@ function toggleTheme() {
 }
 
 /* ── Restore saved preferences on page load ── */
-(function() {
+window.addEventListener('DOMContentLoaded', () => {
   try {
     const th = localStorage.getItem('medreport-theme');
     if (th) document.documentElement.setAttribute('data-theme', th);
-    const lg = localStorage.getItem('medreport-lang');
-    if (lg && T[lg]) {
-      currentLang = lg;
-      document.documentElement.setAttribute('data-lang', lg);
-      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-      const btn = document.getElementById('btn-' + lg);
-      if (btn) btn.classList.add('active');
+    const lg = localStorage.getItem('medreport-lang') || 'en';
+    if (T[lg]) {
+      setLang(lg);
     }
   } catch(e) {}
-})();
+});
 
 /* ═══════════════════════════════════════════════════════════
    VIEW MANAGEMENT
@@ -627,7 +623,7 @@ function resetApp() {
 /* ── Download PDF ── */
 function downloadPDF() {
   if (currentReportId) {
-    window.location.href = `/download/${currentReportId}`;
+    window.location.href = `/download/${currentReportId}?lang=${currentLang}`;
   } else {
     alert('No report to download. Please analyze a report first.');
   }
@@ -661,30 +657,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 
 window.getCurrentLang = () => currentLang;
-(function() {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      document.documentElement.setAttribute('data-theme', savedTheme);
-    }
-  })();
-
-  function toggleTheme() {
-    const html = document.documentElement;
-    const current = html.getAttribute('data-theme');
-    const next = current === 'dark' ? 'light' : 'dark';
-    html.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-  }
-
-  // Language toggle
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      document.documentElement.setAttribute('data-lang', e.target.dataset.lang);
-      localStorage.setItem('lang', e.target.dataset.lang);
-    });
-  });
 </script>
 </body>
 </html>

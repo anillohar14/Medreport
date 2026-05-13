@@ -1,13 +1,12 @@
 import sqlite3
-import hashlib
+from werkzeug.security import generate_password_hash, check_password_hash
 import json
 from datetime import datetime
 from contextlib import contextmanager
 
 DATABASE = 'medreport.db'
 
-def hash_password(password):
-    return hashlib.sha256(password.encode()).hexdigest()
+
 
 @contextmanager
 def get_db():
@@ -52,7 +51,7 @@ def create_user(username, email, password):
         try:
             c.execute(
                 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
-                (username, email, hash_password(password))
+                (username, email, generate_password_hash(password))
             )
             conn.commit()
             return True, "User created successfully"
@@ -63,11 +62,13 @@ def verify_user(username, password):
     with get_db() as conn:
         c = conn.cursor()
         c.execute(
-            'SELECT * FROM users WHERE username = ? AND password = ?',
-            (username, hash_password(password))
+            'SELECT * FROM users WHERE username = ?',
+            (username,)
         )
         user = c.fetchone()
-        return dict(user) if user else None
+        if user and check_password_hash(user['password'], password):
+            return dict(user)
+        return None
 
 def save_report(user_id, filename, analysis_data, health_score):
     with get_db() as conn:

@@ -156,7 +156,7 @@ def analyze_report():
     except Exception as e:
         import traceback
         print(traceback.format_exc())
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': 'An unexpected error occurred while analyzing the report. Please try again.'}), 500
     
     finally:
         try:
@@ -176,17 +176,21 @@ def view_report(report_id):
 @app.route('/download/<int:report_id>')
 @login_required
 def download_report(report_id):
+    lang = request.args.get('lang', 'en')
+    if lang not in ALL_LANGS:
+        lang = 'en'
+        
     report_data = get_report_data(report_id, session['user_id'])
     if not report_data:
         return "Report not found", 404
     
-    pdf_filename = f"report_{report_id}.pdf"
+    pdf_filename = f"report_{report_id}_{lang}.pdf"
     pdf_path = os.path.join(app.config['REPORT_FOLDER'], pdf_filename)
     
-    generate_pdf(report_data['en'], f"Medical_Report_{report_id}", pdf_path)
+    generate_pdf(report_data[lang], f"Medical_Report_{report_id}_{lang}", pdf_path)
     
     return send_file(pdf_path, as_attachment=True, 
-                    download_name=f"MedReport_{report_id}.pdf")
+                    download_name=f"MedReport_{report_id}_{lang}.pdf")
 
 def _smart_extract(file_path):
     if file_path.lower().endswith('.pdf'):

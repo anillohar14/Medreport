@@ -1,5 +1,6 @@
 import cv2
 import os
+import uuid
 import pytesseract
 from pdf2image import convert_from_path
 
@@ -122,7 +123,7 @@ def extract_text_from_pdf(pdf_path):
     full_text = ""
 
     for i, page in enumerate(pages):
-        temp_path = f"_ocr_temp_page_{i}.jpg"
+        temp_path = f"_ocr_temp_page_{uuid.uuid4().hex}_{i}.jpg"
         page_num  = i + 1
 
         try:
