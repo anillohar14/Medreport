@@ -8,7 +8,8 @@ from pdf2image import convert_from_path
 # SETTINGS
 # ─────────────────────────────────────────────────────────────
 
-POPPLER_PATH = None
+import shutil
+POPPLER_PATH = shutil.which('pdftoimage') or None
 
 PDF_DPI = 300
 
