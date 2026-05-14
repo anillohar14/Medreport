@@ -15,7 +15,8 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Download Hindi Font for PDF Generation
-RUN wget https://github.com/google/fonts/raw/main/ofl/notosansdevanagari/NotoSansDevanagari-Regular.ttf -O NotoSansDevanagari-Regular.ttf
+RUN wget https://github.com/google/fonts/raw/main/ofl/notosansdevanagari/NotoSansDevanagari-Regular.ttf -O NotoSansDevanagari-Regular.ttf && \
+    wget https://github.com/google/fonts/raw/main/ofl/notosansdevanagari/NotoSansDevanagari-Bold.ttf -O NotoSansDevanagari-Bold.ttf
 
 # Copy the requirements file into the container
 COPY requirements.txt .

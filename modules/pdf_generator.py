@@ -8,14 +8,26 @@ from reportlab.pdfbase.ttfonts import TTFont
 from datetime import datetime
 import os
 
+from reportlab.pdfbase.pdfmetrics import registerFontFamily
+
 font_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'NotoSansDevanagari-Regular.ttf')
+bold_font_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'NotoSansDevanagari-Bold.ttf')
+
 try:
     if os.path.exists(font_path):
         pdfmetrics.registerFont(TTFont('Devanagari', font_path))
         font_name = 'Devanagari'
+        
+        if os.path.exists(bold_font_path):
+            pdfmetrics.registerFont(TTFont('Devanagari-Bold', bold_font_path))
+            registerFontFamily('Devanagari', normal='Devanagari', bold='Devanagari-Bold')
+        else:
+            # Fallback to using regular font for bold to prevent black boxes
+            registerFontFamily('Devanagari', normal='Devanagari', bold='Devanagari')
     else:
         font_name = 'Helvetica'
-except Exception:
+except Exception as e:
+    print(f"Font registration error: {e}")
     font_name = 'Helvetica'
 
 def generate_pdf(analysis_data, filename, output_path):
