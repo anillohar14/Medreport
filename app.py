@@ -183,9 +183,8 @@ def view_report(report_id):
 @app.route('/download/<int:report_id>')
 @login_required
 def download_report(report_id):
-    lang = request.args.get('lang', 'en')
-    if lang not in ALL_LANGS:
-        lang = 'en'
+    # Always use Hinglish for PDF download
+    lang = 'hin'
         
     report_data = get_report_data(report_id, session['user_id'])
     if not report_data:
