@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MedReport</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg:#080c14; --surface:#0e1520; --surface-2:#131c2a;
@@ -23,12 +23,7 @@
   --critical:#e0293a; --danger:#d95822; --caution:#c89200; --ok:#189e5a;
   --shadow:0 4px 20px rgba(0,0,0,.1);
 }
-[data-lang="hi"] body,[data-lang="hi"] h1,[data-lang="hi"] button,
-[data-lang="hi"] .hero-title,[data-lang="hi"] .hero-sub,
-[data-lang="hi"] .sec-label,[data-lang="hi"] .drop-zone h3,
-[data-lang="hi"] .drop-zone p {
-  font-family:'Noto Sans Devanagari','Outfit',sans-serif;
-}
+/* Hindi font override removed — PDF is Hinglish only */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:10px;}
@@ -37,7 +32,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 /* HEADER */
 header{padding:0 28px;height:58px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:rgba(8,12,20,.92);backdrop-filter:blur(10px);position:sticky;top:0;z-index:100;transition:background .3s,border-color .3s;}
 [data-theme="light"] header{background:rgba(240,244,249,.92);}
-.logo{width:32px;height:32px;background:var(--accent);border-radius:9px;display:grid;place-items:center;font-weight:700;color:#fff;font-size:14px;flex-shrink:0;}
+.logo{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),#45aaf2);border-radius:9px;display:grid;place-items:center;font-weight:700;color:#fff;font-size:14px;flex-shrink:0;}
 header h1{font-size:15px;font-weight:600;flex:1;}
 header h1 span{color:var(--muted);font-weight:400;}
 .back-btn{padding:6px 16px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border-2);color:var(--text);text-decoration:none;font-size:13px;font-weight:500;transition:all .2s;}
