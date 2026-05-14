@@ -108,8 +108,11 @@ def analyze_report():
         return jsonify({'error': t('err_no_select', lang)}), 400
     
     filename = secure_filename(file.filename)
-    ext = os.path.splitext(filename)[1].lower() or '.pdf'
-    tmp_fd, tmp_path = tempfile.mkstemp(suffix=ext)
+    ext = os.path.splitext(filename)[1].lower()
+    if ext != '.pdf':
+        return jsonify({'error': 'Only PDF files are supported. Please upload a PDF file.'}), 400
+    
+    tmp_fd, tmp_path = tempfile.mkstemp(suffix='.pdf')
     os.close(tmp_fd)
     
     try:
@@ -155,15 +158,8 @@ def analyze_report():
     
     except Exception as e:
         import traceback
-        error_msg = str(e)
         print(traceback.format_exc())
-        if "tesseract is not installed" in error_msg.lower() or "tesseractnotfounderror" in str(type(e)).lower():
-            friendly_err = "OCR component (Tesseract) is missing on the server. Please ensure the app is deployed using Docker on Render."
-        elif "libgl.so.1" in error_msg.lower():
-            friendly_err = "OpenCV dependency missing. Deployment environment is incorrect."
-        else:
-            friendly_err = f"An unexpected error occurred: {error_msg}"
-        return jsonify({'error': friendly_err}), 500
+        return jsonify({'error': f'An unexpected error occurred: {str(e)}'}), 500
     
     finally:
         try:
@@ -199,26 +195,18 @@ def download_report(report_id):
                     download_name=f"MedReport_{report_id}_{lang}.pdf")
 
 def _smart_extract(file_path):
-    if file_path.lower().endswith('.pdf'):
-        try:
-            import pdfplumber
-            text = ''
-            with pdfplumber.open(file_path) as pdf:
-                for page in pdf.pages:
-                    pt = page.extract_text()
-                    if pt:
-                        text += pt + '\n'
-            if len(text.strip()) > 50:
-                print(f"Extracted {len(text)} chars using pdfplumber")
-                return text
-        except ImportError:
-            print("pdfplumber not installed, using OCR")
-        except Exception as e:
-            print(f"pdfplumber error: {e}, using OCR")
-    
-    print("Using OCR extraction")
-    from modules.ocr import extract_text
-    return extract_text(file_path)
+    """Extract text from PDF using pdfplumber."""
+    import pdfplumber
+    text = ''
+    with pdfplumber.open(file_path) as pdf:
+        for page in pdf.pages:
+            pt = page.extract_text()
+            if pt:
+                text += pt + '\n'
+    if len(text.strip()) < 50:
+        raise ValueError('Could not extract enough text from the PDF. Please ensure the PDF contains readable text.')
+    print(f"Extracted {len(text)} chars from PDF")
+    return text
 
 if __name__ == '__main__':
     init_db()

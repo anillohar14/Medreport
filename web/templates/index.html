@@ -210,14 +210,14 @@ main{max-width:980px;margin:0 auto;padding:48px 24px 80px;}
   <!-- ① UPLOAD VIEW -->
   <div id="upload-view" class="view active">
     <p class="hero-title" data-i18n="hero_title">Understand your lab report</p>
-    <p class="hero-sub"   data-i18n="hero_sub">Upload your PDF or image — analyzed in second</p>
+    <p class="hero-sub"   data-i18n="hero_sub">Upload your PDF report — analyzed in seconds</p>
     <div class="drop-zone" id="drop-zone">
       <span class="drop-icon"></span>
       <h3 data-i18n="drop_title">Drop your report here</h3>
-      <p  data-i18n="drop_sub">PDF, JPG, PNG — supported formats</p>
+      <p  data-i18n="drop_sub">PDF files supported</p>
       <button class="pick-btn" onclick="document.getElementById('file-input').click()" data-i18n="drop_btn">Choose File</button>
     </div>
-    <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png">
+    <input type="file" id="file-input" accept=".pdf">
   </div>
 
   <!-- ② LOADING VIEW -->
@@ -287,9 +287,9 @@ const T = {
   en: {
     header_sub:'— Smart Lab Report Analyzer',
     hero_title:'Understand your lab report',
-    hero_sub:'Upload your PDF or image — analyzed in seconds',
+    hero_sub:'Upload your PDF report — analyzed in seconds',
     drop_title:'Drop your report here',
-    drop_sub:'PDF, JPG, PNG — supported formats',
+    drop_sub:'PDF files supported',
     drop_btn:'Choose File',
     loading_title:'Analyzing your report...',
     loading_sub:'Please wait a few seconds',
@@ -310,9 +310,9 @@ const T = {
   hi: {
     header_sub:'— स्मार्ट लैब रिपोर्ट विश्लेषक',
     hero_title:'अपनी लैब रिपोर्ट समझें',
-    hero_sub:'PDF या इमेज अपलोड करें — सेकंड में विश्लेषण होगा',
+    hero_sub:'PDF रिपोर्ट अपलोड करें — सेकंड में विश्लेषण होगा',
     drop_title:'रिपोर्ट यहाँ छोड़ें',
-    drop_sub:'PDF, JPG, PNG — समर्थित प्रारूप',
+    drop_sub:'PDF फ़ाइलें समर्थित',
     drop_btn:'फ़ाइल चुनें',
     loading_title:'रिपोर्ट का विश्लेषण हो रहा है...',
     loading_sub:'कृपया प्रतीक्षा करें...',
@@ -333,9 +333,9 @@ const T = {
   hin: {
     header_sub:'— Smart Lab Report Analyzer',
     hero_title:'Apni lab report samjho',
-    hero_sub:'PDF ya image upload karo — seconds mein analyze hoga',
+    hero_sub:'PDF report upload karo — seconds mein analyze hoga',
     drop_title:'Report yahan drop karo',
-    drop_sub:'PDF, JPG, PNG — supported formats',
+    drop_sub:'PDF files supported',
     drop_btn:'File Chunno',
     loading_title:'Report analyze ho rahi hai...',
     loading_sub:'Thoda wait karo...',

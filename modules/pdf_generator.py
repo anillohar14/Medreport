@@ -3,38 +3,15 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
 from datetime import datetime
-import os
 
-from reportlab.pdfbase.pdfmetrics import registerFontFamily
-
-font_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'NotoSansDevanagari-Regular.ttf')
-bold_font_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'NotoSansDevanagari-Bold.ttf')
-
-try:
-    if os.path.exists(font_path):
-        pdfmetrics.registerFont(TTFont('Devanagari', font_path))
-        font_name = 'Devanagari'
-        
-        if os.path.exists(bold_font_path):
-            pdfmetrics.registerFont(TTFont('Devanagari-Bold', bold_font_path))
-            registerFontFamily('Devanagari', normal='Devanagari', bold='Devanagari-Bold')
-        else:
-            # Fallback to using regular font for bold to prevent black boxes
-            registerFontFamily('Devanagari', normal='Devanagari', bold='Devanagari')
-    else:
-        font_name = 'Helvetica'
-except Exception as e:
-    print(f"Font registration error: {e}")
-    font_name = 'Helvetica'
+# Hinglish uses Roman/Latin characters — Helvetica works perfectly
+font_name = 'Helvetica'
 
 def generate_pdf(analysis_data, filename, output_path):
     doc = SimpleDocTemplate(output_path, pagesize=A4)
     story = []
     styles = getSampleStyleSheet()
-    styles['Normal'].fontName = font_name
     
     title_style = ParagraphStyle(
         'CustomTitle',
@@ -69,7 +46,7 @@ def generate_pdf(analysis_data, filename, output_path):
         ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f0f4f9')),
         ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (0, -1), font_name),
+        ('FONTNAME', (0, 0), (-1, -1), font_name),
         ('FONTSIZE', (0, 0), (-1, -1), 10),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 12),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.grey)
@@ -99,7 +76,7 @@ def generate_pdf(analysis_data, filename, output_path):
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#00c9a7')),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('FONTNAME', (0, 0), (-1, 0), font_name),
+            ('FONTNAME', (0, 0), (-1, -1), font_name),
             ('FONTSIZE', (0, 0), (-1, 0), 11),
             ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
             ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
