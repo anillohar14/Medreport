@@ -155,8 +155,15 @@ def analyze_report():
     
     except Exception as e:
         import traceback
+        error_msg = str(e)
         print(traceback.format_exc())
-        return jsonify({'error': 'An unexpected error occurred while analyzing the report. Please try again.'}), 500
+        if "tesseract is not installed" in error_msg.lower() or "tesseractnotfounderror" in str(type(e)).lower():
+            friendly_err = "OCR component (Tesseract) is missing on the server. Please ensure the app is deployed using Docker on Render."
+        elif "libgl.so.1" in error_msg.lower():
+            friendly_err = "OpenCV dependency missing. Deployment environment is incorrect."
+        else:
+            friendly_err = f"An unexpected error occurred: {error_msg}"
+        return jsonify({'error': friendly_err}), 500
     
     finally:
         try:

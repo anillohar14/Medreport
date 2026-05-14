@@ -26,7 +26,9 @@ def preprocess_standard(img):
     Standard preprocessing — zyaadatar cases mein kaam karta hai.
     Steps: resize → grayscale → blur → threshold
     """
-    img = cv2.resize(img, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+    height, width = img.shape[:2]
+    scale = 3 if width < 1000 else 2 if width < 2000 else 1.5
+    img = cv2.resize(img, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -42,7 +44,9 @@ def preprocess_adaptive(img):
     Adaptive preprocessing — uneven lighting wali images ke liye.
     Jab normal threshold fail kare tab ye try karo.
     """
-    img = cv2.resize(img, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+    height, width = img.shape[:2]
+    scale = 2 if width < 1500 else 1.5 if width < 2500 else 1
+    img = cv2.resize(img, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
