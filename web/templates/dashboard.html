@@ -259,7 +259,7 @@
     {% if reports %}
     <div class="reports-grid">
       {% for report in reports %}
-      <div class="report-card" style="animation-delay: {{ loop.index0 * 0.06 }}s">
+      <div class="report-card" data-delay="{{ loop.index0 }}">
         <div class="card-header">
           <div class="card-filename">{{ report.filename }}</div>
           <div class="health-badge {% if report.health_score >= 85 %}badge-good{% elif report.health_score >= 65 %}badge-moderate{% else %}badge-poor{% endif %}">
@@ -303,6 +303,11 @@
     function viewReport(reportId) {
       window.location.href = '/analyze?report=' + reportId;
     }
+
+    /* ── Stagger card animations ── */
+    document.querySelectorAll('.report-card[data-delay]').forEach(card => {
+      card.style.animationDelay = (parseInt(card.dataset.delay) * 0.06) + 's';
+    });
   </script>
 </body>
 </html>
